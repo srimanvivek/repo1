@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A little Universe 🕊️</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Caveat:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#1B0B2E;
+    --night2:#2E1150;
+    --violet:#8B5CF6;
+    --violet-deep:#6D28D9;
+    --pink:#FF4FA3;
+    --coral:#FF7A59;
+    --teal:#2EC4B6;
+    --gold:#FFC145;
+    --cream:#FFF9F3;
+    --lavender:#F1E6FF;
+    --ink:#241433;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Poppins',sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:600;}
+  .hand{font-family:'Caveat',cursive;}
+  section{position:relative;width:100%;}
+
+  .grad-text{
+    background:linear-gradient(90deg,var(--violet),var(--pink),var(--coral),var(--gold),var(--teal),var(--violet));
+    background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:gradientShift 6s ease infinite;
+  }
+  @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+  .confetti-piece{
+    position:absolute;top:-20px;border-radius:2px;pointer-events:none;
+    animation:confettiFall linear forwards;z-index:5;
+  }
+  @keyframes confettiFall{
+    0%{transform:translateY(0) rotate(0deg);opacity:1;}
+    100%{transform:translateY(110vh) rotate(540deg);opacity:0.9;}
+  }
+  .petal{
+    position:absolute;top:-30px;pointer-events:none;font-size:1.1rem;
+    animation:petalFall linear infinite;opacity:0.9;z-index:1;
+  }
+  @keyframes petalFall{
+    0%{transform:translate(0,0) rotate(0deg);}
+    50%{transform:translate(24px,50vh) rotate(180deg);}
+    100%{transform:translate(-10px,105vh) rotate(360deg);}
+  }
+
+  /* ---------- HERO + COUNTDOWN ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;color:#fff;position:relative;overflow:hidden;
+    padding:60px 20px 40px;
+  }
+  .hero img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    filter:brightness(0.5) saturate(1.15);
+  }
+  .hero::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(150deg, rgba(139,92,246,0.55) 0%, rgba(255,79,163,0.35) 45%, rgba(27,11,46,0.85) 100%);
+  }
+  .hero-content{position:relative;z-index:2;padding:0 24px;max-width:640px;}
+  .hero .eyebrow{
+    letter-spacing:4px;font-size:0.75rem;text-transform:uppercase;
+    color:var(--gold);margin-bottom:18px;font-weight:500;
+  }
+  .hero h1{
+    font-size:clamp(2.8rem,11vw,6rem);line-height:0.95;font-style:italic;
+    text-shadow:0 4px 30px rgba(0,0,0,0.5);
+  }
+  .hero p.tagline{
+    margin-top:20px;font-size:1.02rem;font-weight:300;color:var(--lavender);
+    max-width:420px;margin-left:auto;margin-right:auto;line-height:1.7;
+  }
+
+  .countdown-card{
+    position:relative;z-index:2;margin-top:38px;
+    background:rgba(255,255,255,0.12);backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.3);border-radius:22px;
+    padding:26px 24px 22px;
+    box-shadow:0 20px 50px -15px rgba(0,0,0,0.4);
+  }
+  .countdown-card .cd-label{
+    font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;
+  }
+  .countdown-grid{display:flex;gap:14px;justify-content:center;}
+  .cd-box{
+    background:rgba(255,255,255,0.14);
+    border:1px solid rgba(255,255,255,0.3);border-radius:14px;
+    width:70px;padding:12px 4px;
+  }
+  .cd-box span{display:block;font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:600;line-height:1;color:#fff;}
+  .cd-box small{display:block;margin-top:6px;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;color:var(--lavender);}
+  .countdown-done{margin-top:8px;font-family:'Caveat',cursive;font-size:1.6rem;display:none;color:var(--gold);}
+  .countdown-done.show{display:block;}
+
+  .scroll-cue{
+    position:relative;z-index:2;margin-top:34px;color:var(--lavender);font-size:0.75rem;letter-spacing:2px;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    animation:float 2.2s ease-in-out infinite;
+  }
+  .scroll-cue span{width:1px;height:28px;background:var(--gold);opacity:0.7;}
+  @keyframes float{0%,100%{transform:translate(0,0);}50%{transform:translate(0,8px);}}
+
+  /* ---------- CANDLE ---------- */
+  .candle-sec{
+    min-height:100vh;position:relative;overflow:hidden;
+    background:linear-gradient(160deg, var(--night) 0%, var(--night2) 45%, #3B1360 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:var(--lavender);text-align:center;padding:80px 24px;
+  }
+  .candle-sec .label{letter-spacing:3px;font-size:0.75rem;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+  .candle-sec h2{font-size:clamp(2.1rem,6vw,3.1rem);font-style:italic;margin-bottom:8px;color:#fff;}
+  .candle-sec .sub{font-weight:300;font-size:0.95rem;max-width:380px;opacity:0.9;margin-bottom:14px;}
+  .mic-status{
+    font-size:0.85rem;color:var(--teal);opacity:0;transition:opacity .4s ease;margin-bottom:36px;
+    display:flex;align-items:center;gap:8px;justify-content:center;
+  }
+  .mic-status.show{opacity:1;}
+  .mic-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 rgba(46,196,182,0.6);animation:pulseDot 1.4s ease infinite;}
+  @keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(46,196,182,0.6);}70%{box-shadow:0 0 0 10px rgba(46,196,182,0);}100%{box-shadow:0 0 0 0 rgba(46,196,182,0);}}
+  .cake{display:flex;gap:24px;margin-bottom:44px;}
+  .candle{position:relative;width:14px;height:80px;background:linear-gradient(180deg,#fff,var(--gold));border-radius:6px;}
+  .flame{
+    position:absolute;top:-34px;left:50%;transform:translateX(-50%);
+    width:16px;height:26px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    background:radial-gradient(circle at 50% 70%, #fff9c4, var(--gold) 60%, #B8873D 100%);
+    box-shadow:0 0 18px 6px rgba(255,193,69,0.55);
+    transform-origin:bottom center;
+    animation:flicker 1.3s ease-in-out infinite alternate;
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  #f2{background:radial-gradient(circle at 50% 70%, #ffe3f2, var(--pink) 60%, #B8236E 100%);box-shadow:0 0 18px 6px rgba(255,79,163,0.55);}
+  #f3{background:radial-gradient(circle at 50% 70%, #e3fffa, var(--teal) 60%, #167A70 100%);box-shadow:0 0 18px 6px rgba(46,196,182,0.55);}
+  @keyframes flicker{
+    0%{transform:translateX(-50%) rotate(-3deg) scale(1);}
+    50%{transform:translateX(-50%) rotate(2deg) scale(1.05);}
+    100%{transform:translateX(-50%) rotate(-2deg) scale(0.97);}
+  }
+  .flame.out{opacity:0;transform:translateX(-50%) scale(0.3);}
+  .blow-btn{
+    background:linear-gradient(90deg,var(--violet),var(--pink));border:none;color:#fff;
+    padding:14px 34px;border-radius:40px;font-family:'Poppins',sans-serif;
+    font-size:0.9rem;letter-spacing:1px;cursor:pointer;transition:all .3s ease;
+    box-shadow:0 10px 30px -8px rgba(255,79,163,0.5);
+  }
+  .blow-btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px -8px rgba(255,79,163,0.65);}
+  .wish-msg{margin-top:26px;font-family:'Caveat',cursive;font-size:1.6rem;color:var(--gold);min-height:34px;opacity:0;transition:opacity .8s ease;}
+  .wish-msg.show{opacity:1;}
+  .sparks{margin-top:6px;font-size:1.3rem;opacity:0;transition:opacity 1s ease;}
+  .sparks.show{opacity:1;}
+
+  .wish-form{
+    margin-top:30px;max-width:360px;width:100%;
+    opacity:0;max-height:0;overflow:hidden;transition:opacity .5s ease;
+  }
+  .wish-form.show{opacity:1;max-height:400px;margin-top:30px;}
+  .wish-form-label{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--gold);margin-bottom:14px;}
+  .wish-form textarea{
+    width:100%;min-height:90px;border-radius:14px;border:1px solid rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.1);color:#fff;padding:14px 16px;font-family:'Poppins',sans-serif;
+    font-size:0.92rem;resize:none;margin-bottom:18px;outline:none;
+  }
+  .wish-form textarea::placeholder{color:rgba(241,230,255,0.55);}
+  .wish-form textarea:focus{border-color:var(--pink);}
+
+  /* ---------- LETTER ---------- */
+  .letter-sec{
+    background:linear-gradient(160deg,var(--lavender) 0%,#FCE4EC 100%);
+    padding:120px 20px;display:flex;justify-content:center;
+  }
+  .letter-card{
+    max-width:640px;width:100%;background:var(--cream);
+    padding:56px 44px;border-radius:18px;
+    box-shadow:0 30px 60px -20px rgba(109,40,217,0.25);
+    position:relative;overflow:hidden;
+  }
+  .letter-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:6px;
+    background:linear-gradient(90deg,var(--violet),var(--pink),var(--coral),var(--gold));
+  }
+  .letter-eyebrow{font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--violet-deep);margin-bottom:18px;}
+  .letter-card h2{font-size:clamp(1.9rem,4vw,2.6rem);font-style:italic;color:var(--violet-deep);margin-bottom:26px;}
+  .letter-card p{font-size:1.02rem;line-height:1.9;color:#3a2a4a;margin-bottom:18px;font-weight:300;}
+  .letter-sign{
+    margin-top:32px;text-align:right;font-family:'Caveat',cursive;
+    font-size:2rem;color:var(--pink);
+  }
+
+  /* ---------- STORY / TIMELINE ---------- */
+  .story-sec{padding:120px 20px;max-width:900px;margin:0 auto;background:var(--cream);}
+  .story-header{text-align:center;margin-bottom:70px;}
+  .story-header .label{letter-spacing:3px;font-size:0.75rem;text-transform:uppercase;color:var(--coral);}
+  .story-header h2{font-size:clamp(2rem,5vw,2.8rem);font-style:italic;color:var(--violet-deep);margin-top:8px;}
+  .thread{position:relative;padding-left:36px;}
+  .thread::before{
+    content:'';position:absolute;left:6px;top:6px;bottom:6px;width:2px;
+    background:linear-gradient(180deg,var(--violet),var(--pink),var(--teal));
+  }
+  .thread-item{position:relative;margin-bottom:62px;}
+  .thread-item::before{
+    content:'';position:absolute;left:-36px;top:6px;width:12px;height:12px;
+    border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--pink));box-shadow:0 0 0 4px var(--lavender);
+  }
+  .thread-item h3{font-style:italic;font-size:1.5rem;color:var(--violet-deep);margin-bottom:10px;}
+  .thread-item p{font-weight:300;line-height:1.85;color:#3a2a4a;font-size:0.98rem;}
+
+  /* ---------- GALLERY ---------- */
+  .gallery-sec{background:linear-gradient(160deg,var(--night) 0%,#3B1360 100%);padding:120px 20px;}
+  .gallery-header{text-align:center;margin-bottom:60px;color:var(--lavender);}
+  .gallery-header .label{letter-spacing:3px;font-size:0.75rem;text-transform:uppercase;color:var(--gold);}
+  .gallery-header h2{font-size:clamp(2rem,5vw,2.8rem);font-style:italic;margin-top:8px;color:#fff;}
+  .gallery-grid{
+    max-width:1100px;margin:0 auto;
+    columns:3 260px;column-gap:16px;
+  }
+  .gallery-grid figure{
+    break-inside:avoid;margin-bottom:16px;border-radius:10px;overflow:hidden;
+    position:relative;
+  }
+  .gallery-grid img{width:100%;display:block;transition:transform .5s ease;}
+  .gallery-grid figure:hover img{transform:scale(1.05);}
+  .gallery-grid figcaption{
+    position:absolute;bottom:0;left:0;right:0;padding:14px 12px 10px;
+    background:linear-gradient(0deg,rgba(0,0,0,0.8),transparent);
+    color:var(--gold);font-family:'Caveat',cursive;font-size:1.15rem;
+  }
+  @media (max-width:640px){.gallery-grid{columns:2 160px;}}
+
+  /* ---------- GIFT ---------- */
+  .gift-sec{
+    min-height:100vh;background:linear-gradient(160deg,#FCE4EC 0%,var(--lavender) 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:100px 24px;
+  }
+  .gift-sec .label{letter-spacing:3px;font-size:0.75rem;text-transform:uppercase;color:var(--violet-deep);}
+  .gift-sec h2{font-size:clamp(2rem,5vw,2.8rem);font-style:italic;color:var(--violet-deep);margin:10px 0 44px;}
+  .seal-wrap{cursor:pointer;position:relative;width:150px;height:150px;}
+  .seal{
+    width:100%;height:100%;border-radius:50%;
+    background:linear-gradient(135deg,var(--violet),var(--pink) 55%,var(--coral) 100%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 20px 40px -12px rgba(109,40,217,0.5);
+    transition:transform .4s ease;
+  }
+  .seal-wrap:hover .seal{transform:scale(1.05) rotate(-3deg);}
+  .seal span{font-family:'Cormorant Garamond',serif;font-style:italic;color:#fff;font-size:2.2rem;}
+  .seal-wrap.cracked .seal{animation:crack .5s ease forwards;}
+  @keyframes crack{
+    0%{transform:scale(1);}
+    40%{transform:scale(1.15) rotate(6deg);}
+    100%{transform:scale(0);opacity:0;}
+  }
+  .gift-note{
+    max-width:520px;margin-top:8px;background:var(--cream);border-radius:14px;
+    padding:38px 34px;box-shadow:0 20px 50px -18px rgba(109,40,217,0.3);
+    opacity:0;transform:translateY(16px);transition:all .7s ease;
+    font-weight:300;line-height:1.9;color:#3a2a4a;
+  }
+  .gift-note.show{opacity:1;transform:translateY(0);}
+  .gift-note .hindi-line{margin-top:18px;font-family:'Caveat',cursive;font-size:1.4rem;color:var(--pink);}
+
+  /* ---------- CLOSING ---------- */
+  .closing-sec{
+    background:linear-gradient(160deg,#3B1360 0%,var(--night) 100%);color:var(--lavender);text-align:center;
+    padding:110px 24px 130px;
+  }
+  .closing-sec .label{letter-spacing:3px;font-size:0.75rem;text-transform:uppercase;color:var(--gold);}
+  .closing-sec h2{font-size:clamp(2rem,6vw,3rem);font-style:italic;margin:14px 0 30px;color:#fff;}
+  .final-sign{font-family:'Caveat',cursive;font-size:1.8rem;color:var(--gold);margin-top:10px;}
+  .made-with{margin-top:50px;font-size:0.75rem;opacity:0.45;letter-spacing:1px;}
+
+  /* ---------- FLOATING MUSIC TOGGLE ---------- */
+  .music-toggle{
+    position:fixed;bottom:22px;right:22px;z-index:100;
+    width:56px;height:56px;border-radius:50%;
+    background:linear-gradient(135deg,var(--violet),var(--pink));
+    border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 12px 30px -8px rgba(109,40,217,0.6);
+    transition:transform .3s ease;
+  }
+  .music-toggle:hover{transform:scale(1.08);}
+  .music-toggle .icon{font-size:1.4rem;color:#fff;line-height:1;}
+  .music-toggle.playing{animation:musicPulse 1.8s ease infinite;}
+  @keyframes musicPulse{
+    0%{box-shadow:0 12px 30px -8px rgba(109,40,217,0.6), 0 0 0 0 rgba(255,79,163,0.5);}
+    70%{box-shadow:0 12px 30px -8px rgba(109,40,217,0.6), 0 0 0 14px rgba(255,79,163,0);}
+    100%{box-shadow:0 12px 30px -8px rgba(109,40,217,0.6), 0 0 0 0 rgba(255,79,163,0);}
+  }
+   /* ---------- NEXT UNIVERSE ---------- */
+.next-universe{
+  margin-top:70px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+}
+
+.next-universe p{
+  font-family:'Caveat',cursive;
+  font-size:1.45rem;
+  color:var(--lavender);
+  opacity:0.8;
+}
+
+.universe-btn{
+  display:inline-block;
+  text-decoration:none;
+  color:#fff;
+  padding:15px 30px;
+  border-radius:50px;
+  font-size:0.9rem;
+  letter-spacing:0.5px;
+  background:linear-gradient(90deg,var(--violet),var(--pink),var(--coral));
+  box-shadow:0 12px 35px -10px rgba(255,79,163,0.6);
+  transition:all .35s ease;
+}
+
+.universe-btn:hover{
+  transform:translateY(-4px) scale(1.03);
+  box-shadow:0 18px 40px -10px rgba(255,79,163,0.8);
+}
+   
+</style>
+</head>
+<body>
+
+<!-- HERO + COUNTDOWN -->
+<section class="hero">
+  <img src="photo1.PNG" alt="Riya">
+  <div class="hero-content">
+    <div class="eyebrow">21 · September · Riya Turns 19</div>
+    <h1>Happy Birthday,<br>Riya</h1>
+    <p class="tagline">One ordinary birthday wasn't enough, so I made you an entire universe instead.</p>
+  </div>
+
+  <div class="countdown-card">
+    <div class="cd-label">Counting Down To Her Big Day</div>
+    <div class="countdown-grid">
+      <div class="cd-box"><span id="cdDays">00</span><small>Days</small></div>
+      <div class="cd-box"><span id="cdHours">00</span><small>Hours</small></div>
+      <div class="cd-box"><span id="cdMins">00</span><small>Mins</small></div>
+      <div class="cd-box"><span id="cdSecs">00</span><small>Secs</small></div>
+    </div>
+    <div class="countdown-done" id="countdownDone">It's here — happy birthday, Riya! 🎉🎂</div>
+  </div>
+
+  <div class="scroll-cue"><span></span>scroll</div>
+  <div id="heroPetals"></div>
+</section>
+
+<!-- CANDLE -->
+<section class="candle-sec">
+  <div class="label">Make a wish</div>
+  <h2>Blow the candles, Devi 🕯️</h2>
+  <p class="sub">Blow the candles for real, or just tap the button if your lungs aren't cooperating today.</p>
+  <div class="mic-status" id="micStatus"><span class="mic-dot"></span> Listening... blow now</div>
+  <div class="cake">
+    <div class="candle"><div class="flame" id="f1"></div></div>
+    <div class="candle"><div class="flame" id="f2"></div></div>
+    <div class="candle"><div class="flame" id="f3"></div></div>
+  </div>
+  <button class="blow-btn" id="blowBtn">🎤 Blow the Candles</button>
+
+  <div class="wish-form" id="wishForm">
+    <p class="wish-form-label">Make a wish — write it down 🕊️</p>
+    <textarea id="wishInput" placeholder="Yahan apna wish likho..." maxlength="200"></textarea>
+    <button class="blow-btn send-btn" id="sendWishBtn">🌠 Send it to the Universe</button>
+  </div>
+
+  <div class="wish-msg" id="wishMsg">Wish sent to the universe 🌠</div>
+  <div class="sparks" id="sparks">💗 ✨ 🎈 ✨ 💫</div>
+</section>
+
+<!-- LETTER -->
+<section class="letter-sec">
+  <div class="letter-card">
+    <div class="letter-eyebrow">A litte Note for you</div>
+    <h2>Riya,</h2>
+    <p>Some people enter your life without making a big announcement,and somehow end up becoming a part of your favourite memories. You're one of those people.</p>
+    <p>We've laughed over the dumbest things, survived random chaos,and collected moments that probably wouldn't make sense to anyone else. And honestly, that's what makes them special.</p>
+    <p>So on your birthday, I just hope life gives you more reasons to smile, more places to explore, more dreams to chase, and people around you who genuinely value the person you are.</p>
+    <div class="letter-sign">— Someone who is glad you're here ✨</div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="story-sec">
+  <div class="story-header">
+    <div class="label">Our Story, In Fragments</div>
+    <h2>A Few Pages I Keep Going Back To</h2>
+  </div>
+  <div class="thread">
+    <div class="thread-item">
+      <h3>The Random Beginning</h3>
+        <p>Somewhere along the way, a normal friendship turned into a collection of inside jokes, random conversations, and memories I wouldn't trade for anything.</p>
+    </div>
+    <div class="thread-item">
+      <h3>The Moments That Stayed</h3>
+        <p>It's funny how the smallest moments sometimes become the ones you remember most. Random laughs, pointless conversations, spontaneous plans — somehow, those are the memories that stick. </p>
+    </div>
+    <div class="thread-item">
+      <h3>And Then There's You</h3>
+        <p>You've become one of those people whose presence simply makes things better. So here's to another year of becoming more yourself, chasing bigger dreams, and making a little more chaos along the way.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-sec">
+  <div class="gallery-header">
+    <div class="label">Snapshots</div>
+    <h2>Moments Worth Keeping</h2>
+  </div>
+  <div class="gallery-grid">
+    <figure><img src="photo1.PNG" alt="Riya"><figcaption>Rose in hand, sunshine in the frame</figcaption></figure>
+    <figure><img src="photo2.jpg" alt="Riya"><figcaption>Beach hair, don't care</figcaption></figure>
+    <figure><img src="photo3.PNG" alt="Riya"><figcaption>That look, unbothered as always</figcaption></figure>
+    <figure><img src="photo4.jpeg" alt="Riya"><figcaption>Soft light, softer smile</figcaption></figure>
+    <figure><img src="photo5.jpg" alt="Riya"><figcaption>All dressed up, old-soul vibes</figcaption></figure>
+    <figure><img src="photo6.jpeg" alt="Riya"><figcaption>Just being you, no filter needed</figcaption></figure>
+    <figure><img src="photo7.jpeg" alt="Riya"><figcaption>That quiet, thoughtful side of you</figcaption></figure>
+  </div>
+</section>
+
+<!-- GIFT -->
+<section class="gift-sec">
+  <div class="label">One Last Thing</div>
+  <h2>Tap the Seal to Open It 🎁</h2>
+  <div class="seal-wrap" id="sealWrap">
+    <div class="seal"><span>❤️</span></div>
+  </div>
+  <div class="gift-note" id="giftNote">
+
+  <p>
+    You probably expected a normal birthday wish.
+    Unfortunately, you know me too well — normal was never the plan. 😭
+  </p>
+
+  <p style="margin-top:14px;">
+    So here's a tiny reminder that you're genuinely appreciated.
+    Keep laughing, keep dreaming, keep being unapologetically yourself,
+    and don't let life make you any less you.
+  </p>
+
+  <div class="hindi-line">
+    Bas aise hi rehna — thodi pagal, thodi iconic. ✨
+  </div>
+
+</div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing-sec">
+  <div class="label">One More Thing</div>
+ <h2>Happy Birthday, Riya 🎉</h2>
+
+<div class="final-sign">
+  — Here's to another beautiful chapter ✨
+</div>
+
+<div class="made-with">
+  Made with 💜 for your special day
+</div>
+<div class="next-universe">
+  <p>And if you thought this was the end...</p>
+  <a href="index2.html" class="universe-btn">
+    ✨ Let's Get Into Another Universe
+  </a>
+</div>
+
+</section>
+
+<audio id="bgSong" loop playsinline style="display:none;">
+  <source src="song5.mp3" type="audio/mpeg">
+</audio>
+<button class="music-toggle" id="musicToggle" aria-label="Play or pause song">
+  <span class="icon" id="musicIcon">🎵</span>
+</button>
+
+<script>
+  // ---------- Confetti burst ----------
+  const confettiColors = ['#8B5CF6','#FF4FA3','#FF7A59','#FFC145','#2EC4B6'];
+  function burstConfetti(container, count = 60){
+    for(let i=0;i<count;i++){
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      const size = 6 + Math.random()*6;
+      piece.style.width = size + 'px';
+      piece.style.height = (size*0.4) + 'px';
+      piece.style.left = Math.random()*100 + '%';
+      piece.style.background = confettiColors[Math.floor(Math.random()*confettiColors.length)];
+      piece.style.animationDuration = (2 + Math.random()*1.8) + 's';
+      piece.style.animationDelay = (Math.random()*0.4) + 's';
+      container.appendChild(piece);
+      setTimeout(()=>piece.remove(), 4200);
+    }
+  }
+
+  // ---------- Ambient petals in hero ----------
+  const petalEmojis = ['🌸','✨','💗','🎈'];
+  const heroPetals = document.getElementById('heroPetals');
+  if(heroPetals){
+    for(let i=0;i<16;i++){
+      const p = document.createElement('span');
+      p.className = 'petal';
+      p.textContent = petalEmojis[Math.floor(Math.random()*petalEmojis.length)];
+      p.style.left = Math.random()*100 + '%';
+      p.style.animationDuration = (6 + Math.random()*6) + 's';
+      p.style.animationDelay = (Math.random()*6) + 's';
+      p.style.fontSize = (0.9 + Math.random()*0.9) + 'rem';
+      heroPetals.appendChild(p);
+    }
+  }
+
+  // ---------- Countdown: uses the visitor's own device clock, recalculated every second ----------
+  const cdDays = document.getElementById('cdDays');
+  const cdHours = document.getElementById('cdHours');
+  const cdMins = document.getElementById('cdMins');
+  const cdSecs = document.getElementById('cdSecs');
+  const countdownDone = document.getElementById('countdownDone');
+  const countdownGrid = document.querySelector('.countdown-grid');
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  // Decide: are we before her birthday this year, ON her birthday (all day), or after it (counting to next year)?
+  function getCountdownPhase(now){
+    const year = now.getFullYear();
+    const startOfBday = new Date(year, 7, 18, 0, 0, 0, 0);   // 18 aug, local midnight
+    const startOfNextDay = new Date(year, 7, 19, 0, 0, 0, 0); // 19 aug, local midnight
+
+    if(now < startOfBday){
+      return { phase:'before', target: startOfBday };
+    }
+    if(now >= startOfBday && now < startOfNextDay){
+      return { phase:'today' };
+    }
+    // already past this year's birthday -> fresh countdown to next year's
+    const nextBday = new Date(year + 1, 8, 18, 0, 0, 0, 0);
+    return { phase:'before', target: nextBday };
+  }
+
+  function updateCountdown(){
+    const now = new Date();
+    const { phase, target } = getCountdownPhase(now);
+
+    if(phase === 'today'){
+      countdownGrid.style.display = 'flex';
+      cdDays.textContent = '00'; cdHours.textContent = '00';
+      cdMins.textContent = '00'; cdSecs.textContent = '00';
+      countdownDone.classList.add('show');
+      return;
+    }
+
+    countdownDone.classList.remove('show');
+    countdownGrid.style.display = 'flex';
+    const diff = target - now;
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff / (1000*60*60)) % 24);
+    const m = Math.floor((diff / (1000*60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+    cdDays.textContent = pad(d);
+    cdHours.textContent = pad(h);
+    cdMins.textContent = pad(m);
+    cdSecs.textContent = pad(s);
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ---------- Floating music toggle (play/pause only, no visible player) ----------
+  const bgSong = document.getElementById('bgSong');
+  const musicToggle = document.getElementById('musicToggle');
+  const musicIcon = document.getElementById('musicIcon');
+
+  function setPlayingUI(isPlaying){
+    musicIcon.textContent = isPlaying ? '⏸' : '🎵';
+    musicToggle.classList.toggle('playing', isPlaying);
+  }
+  musicToggle.addEventListener('click', () => {
+    if(bgSong.paused){
+      bgSong.play().catch(()=>{});
+    }else{
+      bgSong.pause();
+    }
+  });
+  bgSong.addEventListener('play', ()=>setPlayingUI(true));
+  bgSong.addEventListener('pause', ()=>setPlayingUI(false));
+
+  function attemptAutoplay(){
+    const p = bgSong.play();
+    if(p !== undefined){ p.catch(()=>{ /* autoplay blocked until user taps */ }); }
+  }
+  window.addEventListener('load', attemptAutoplay);
+  ['click','touchstart','scroll','keydown'].forEach(evt=>{
+    document.addEventListener(evt, function unlockAudio(){ attemptAutoplay(); }, { once:true, passive:true });
+  });
+
+  // ---------- Candle blow logic: real mic-based blow detection ----------
+  const flames = [document.getElementById('f1'), document.getElementById('f2'), document.getElementById('f3')];
+  const wishMsg = document.getElementById('wishMsg');
+  const sparks = document.getElementById('sparks');
+  const blowBtn = document.getElementById('blowBtn');
+  const micStatus = document.getElementById('micStatus');
+  const wishForm = document.getElementById('wishForm');
+  const wishInput = document.getElementById('wishInput');
+  const sendWishBtn = document.getElementById('sendWishBtn');
+  let litCount = flames.length;
+  let blownOut = false;
+
+  function extinguishOne(){
+    if(litCount <= 0) return;
+    litCount -= 1;
+    flames[litCount].classList.add('out');
+    if(litCount === 0){
+      finishWish();
+    }
+  }
+
+  function finishWish(){
+    if(blownOut) return;
+    blownOut = true;
+    blowBtn.style.display = 'none';
+    micStatus.classList.remove('show');
+    setTimeout(()=>{
+      wishForm.classList.add('show');
+      wishInput.focus();
+    }, 400);
+  }
+
+  sendWishBtn.addEventListener('click', () => {
+    wishForm.classList.remove('show');
+    wishMsg.classList.add('show');
+    sparks.classList.add('show');
+    burstConfetti(document.querySelector('.candle-sec'), 80);
+  });
+
+  blowBtn.addEventListener('click', () => {
+    while(litCount > 0){ extinguishOne(); }
+  });
+
+  let micStarted = false;
+  async function startMicListening(){
+    if(micStarted) return;
+    micStarted = true;
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation:false,
+          noiseSuppression:false,
+          autoGainControl:false
+        }
+      });
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(ctx.state === 'suspended'){ ctx.resume().catch(()=>{}); }
+      const source = ctx.createMediaStreamSource(stream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 1024;
+      source.connect(analyser);
+      const data = new Uint8Array(analyser.fftSize);
+      micStatus.classList.add('show');
+
+      let blowStreak = 0;
+      const BLOW_THRESHOLD = 0.16;       // ignores normal talking/background noise
+      const FRAMES_NEEDED = 22;          // ~0.35s of continuous blowing, not a quick spike
+
+      function check(){
+        if(blownOut){ stream.getTracks().forEach(t=>t.stop()); ctx.close(); return; }
+        analyser.getByteTimeDomainData(data);
+        // RMS of the raw waveform — catches sustained breath/blow noise regardless of pitch
+        let sumSquares = 0;
+        for(let i=0;i<data.length;i++){
+          const v = (data[i]-128)/128;
+          sumSquares += v*v;
+        }
+        const rms = Math.sqrt(sumSquares/data.length);
+
+        if(rms > BLOW_THRESHOLD){
+          blowStreak++;
+          if(blowStreak >= FRAMES_NEEDED){
+            extinguishOne();
+            blowStreak = 0;
+          }
+        }else{
+          blowStreak = 0; // any gap resets it — talking has natural pauses, a real blow doesn't
+        }
+        requestAnimationFrame(check);
+      }
+      check();
+    }catch(e){ /* mic denied/unavailable — tap button remains as fallback */ }
+  }
+
+  // Ask for mic only once the candle section is actually in view
+  const candleSec = document.querySelector('.candle-sec');
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        startMicListening();
+      }
+    });
+  }, { threshold: 0.4 });
+  observer.observe(candleSec);
+
+  // ---------- Gift seal reveal ----------
+  const sealWrap = document.getElementById('sealWrap');
+  const giftNote = document.getElementById('giftNote');
+  sealWrap.addEventListener('click', () => {
+    sealWrap.classList.add('cracked');
+    burstConfetti(document.querySelector('.gift-sec'), 80);
+    setTimeout(()=> giftNote.classList.add('show'), 300);
+  });
+</script>
+
+</body>
+</html>
