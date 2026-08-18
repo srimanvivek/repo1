@@ -539,8 +539,8 @@
   // Decide: are we before her birthday this year, ON her birthday (all day), or after it (counting to next year)?
   function getCountdownPhase(now){
     const year = now.getFullYear();
-    const startOfBday = new Date(year, 7, 18, 0, 0, 0, 0);   // 18 aug, local midnight
-    const startOfNextDay = new Date(year, 7, 19, 0, 0, 0, 0); // 19 aug, local midnight
+    const startOfBday = new Date(year, 8, 21, 0, 0, 0, 0);   // 18 aug, local midnight
+    const startOfNextDay = new Date(year, 8, 22, 0, 0, 0, 0); // 19 aug, local midnight
 
     if(now < startOfBday){
       return { phase:'before', target: startOfBday };
@@ -549,7 +549,7 @@
       return { phase:'today' };
     }
     // already past this year's birthday -> fresh countdown to next year's
-    const nextBday = new Date(year + 1, 8, 18, 0, 0, 0, 0);
+    const nextBday = new Date(year + 1, 9, 21, 0, 0, 0, 0);
     return { phase:'before', target: nextBday };
   }
 
