@@ -689,11 +689,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const letterText =
 `Before you scroll any further,
 
-I want you to know something.
+quick appreciation break.
 
-You are genuinely special, and this little universe was created just for you.
+You're honestly one of those friends who somehow makes normal days 10x more entertaining.
 
-Take your time, listen to the music, and enjoy every little moment. ❤️`;
+Between the random conversations, questionable decisions, stupid jokes, and all the little moments in between, we've collected quite a few memories along the way.
+
+So obviously, a basic "Happy Birthday" wasn't going to cut it. 
+
+Hence... this entire little universe.
+
+Take your time, enjoy the music, explore the chaos, and have an amazing birthday.
+
+Stay weird. Stay iconic. And please don't become too responsible — we need the entertainment. 😂❤️`;
 
 
     function startTypewriter() {
