@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordMessage = document.getElementById("password-message");
 
     // 🔐 CHANGE PASSWORD HERE
-    const SECRET_PASSWORD = "9685";
+    const SECRET_PASSWORD = "jhumri";
 
     let passwordUnlocked = false;
 
